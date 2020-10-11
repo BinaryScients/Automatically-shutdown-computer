@@ -25,9 +25,16 @@ echo 3) exit
 echo.
 set /p res="Type the number of the option that you want: "
 
-if %res% == "1" goto turnoff
-if %res% == "2" goto schedule
-if %res% == "3" goto finish
+if "%res%" == "1" goto turnoff
+if "%res%" == "2" goto schedule
+if "%res%" == "3" goto finish
+
+color 0c
+echo Error, the command "%res%" wasn't recognized
+echo.
+echo Press enter to type again
+pause>nul
+cls&goto main
 
 :turnoff
 echo.
@@ -36,7 +43,9 @@ echo.
 echo Press enter to shutdown now
 echo.
 pause>nul
-shutdown /s /f
+::shutdown /s /f
+echo shutdown the pc...
+ping 127.0.0.1 -n 3 >nul
 cls&goto finish
 
 
@@ -44,10 +53,10 @@ cls&goto finish
 echo Schedule the pc to shutdown
 echo.
 set /p sc="Enter the time you want the pc to turn off: "
-if errorlevel(
-	echo Error, type again
-	goto schedule
-)
+:: if errorlevel(
+::	echo Error, type again
+::	goto schedule
+::)
 echo How many times do you want him to hang up at this time?
 echo.
 echo 1) Once
@@ -60,10 +69,11 @@ if %opt% == "2" goto settings
 
 :once
 ::TODO
+pause>nul
 
 :settings
 ::TODO
-
+pause>nul
 
 :finish
 exit
