@@ -5,75 +5,333 @@
 :: 
 :: This is a simple batch program for automaticly shutdown pc
 
+::TODO
+:: Implement an option that verify if already has a task schedule
+:: Fix somethings
+
+set themec=0a
+:load
+:: TODO
 
 :start
 @echo off
-color 3f
+color %themec%
 title Sleeping aid - Automatic shutdown program (v0.1.0 alpha)
 cls
 
 :main
-echo Welcome to Sleeping Aid
+echo Sleeping Aid - Automatic Shutdown Program for Windows
+echo version 0.1.0 Alpha
 echo.
+echo        _    _  ____  __    ___  _____  __  __  ____ 
+echo       ( \/\/ )( ___)(  )  / __)(  _  )(  \/  )( ___)
+echo        )    (  )__)  )(__( (__  )(_)(  )    (  )__) 
+echo       (__/\__)(____)(____)\___)(_____)(_/\/\_)(____)
+echo               _________
+echo              (_____    )
+echo                   )   /_______
+echo                  /   /____    )
+echo                 /   /    )   /
+echo                /   (____/   /
+echo               (__________) (_____
+echo                       (__________)
 echo.
 echo What you want to do now?
 echo.
 echo.
-echo 1) Shutdown the pc
+echo 1) Shutdown the pc now
 echo 2) Schedule the pc to shutdown
-echo 3) exit
+echo 3) Schedule the pc to restart
+echo 4) Delete schedule
+echo 5) Go to options
+echo     0) exit
 echo.
 set /p res="Type the number of the option that you want: "
 
-if "%res%" == "1" goto turnoff
-if "%res%" == "2" goto schedule
-if "%res%" == "3" goto finish
+if "%res%" == "1" cls&goto turnoff
+if "%res%" == "2" cls&goto schedule1
+if "%res%" == "3" cls&goto schedule2
+if "%res%" == "4" cls&goto deletesch
+if "%res%" == "5" cls&goto options
+if "%res%" == "0" cls&goto finish
 
 color 0c
 echo Error, the command "%res%" wasn't recognized
 echo.
-echo Press enter to type again
+echo        [PRESS ENTER TYPE AGAIN]
 pause>nul
+color %themec%
 cls&goto main
 
 :turnoff
 echo.
+echo The pc will shutdown now
 echo.
-echo.
-echo Press enter to shutdown now
+echo        [PRESS ENTER TO CONFIRM]
 echo.
 pause>nul
-::shutdown /s /f
-echo shutdown the pc...
+shutdown /s /f
+echo turning off the PC...
 ping 127.0.0.1 -n 3 >nul
 cls&goto finish
 
+:: schtasks /create /sc daily /tn PCSHUTDOWN /tr cmd shutdown /s /f /c "The windows will finish" /st 22:30 /sd 03/01/2020
+:: schtasks /create /sc <scheduletype> /tn <taskname> /tr <taskrun> [/s <computer> [/u [<domain>\]<user> [/p <password>]]] [/ru {[<domain>\]<user> | system}] [/rp <password>] [/mo <modifier>] [/d <day>[,<day>...] | *] [/m <month>[,<month>...]] [/i <idletime>] [/st <starttime>] [/ri <interval>] [{/et <endtime> | /du <duration>} [/k]] [/sd <startdate>] [/ed <enddate>] [/it] [/z] [/f]
+:: acess this: https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks-create
 
-:schedule
+:schedule1
 echo Schedule the pc to shutdown
 echo.
-set /p sc="Enter the time you want the pc to turn off: "
-:: if errorlevel(
-::	echo Error, type again
-::	goto schedule
-::)
-echo How many times do you want him to hang up at this time?
+set /p tm="Enter the time (24h base time HH:MM) that you want the pc to turn off: "
+if errorlevel 1 (
+	color 0c
+	echo Error, the command "%sc%" wasn't recognized
+	echo.
+	echo        [PRESS ENTER TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto schedule
+)
+echo.
+set /p dt="Enter the date (DD/MM/YYYY) you want this rule to start taking effect (by default it's considered today, type today for default option): "
+if errorlevel 1 (
+	color 0c
+	echo Error, the command "%dt%" wasn't recognized
+	echo.
+	echo        [PRESS ENTER TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto schedule
+)
+if "%dt%" == "today" set dt=%DATE%
+echo What frequency do you want it to turn off?
 echo.
 echo 1) Once
-echo 2) Everyday
+echo 2) Minute
+echo 3) Hourly
+echo 4) Daily
+echo 5) Weekly
+echo 6) Monthly
 echo.
-set /p opt="type here: "
+set /p frec="Type here: "
 
-if %opt% == "1" goto once
-if %opt% == "2" goto settings
+if errorlevel 1 (
+	color 0c
+	echo Error, the command "%sc%" wasn't recognized
+	echo.
+	echo        [PRESS ENTER TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto schedule
+)
 
-:once
-::TODO
+if "%frec%" == "1" set frec=ONCE
+if "%frec%" == "2" set frec=MINUTE
+if "%frec%" == "3" set frec=HOURLY
+if "%frec%" == "4" set frec=DAILY
+if "%frec%" == "5" set frec=WEEKLY
+if "%frec%" == "6" set frec=MONTHLY
+
+if errorlevel 1 (
+	color 0c
+	echo Error, the command "%frec%" wasn't recognized
+	echo.
+	echo        [PRESS ENTER TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto schedule
+)
+
+if errorlevel 2 (
+	color 0c
+	echo Error, the command "%frec%" wasn't recognized
+	echo.
+	echo        [PRESS ENTER TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto schedule
+)
+
+if errorlevel 3 (
+	color 0c
+	echo Error, the command "%frec%" wasn't recognized
+	echo.
+	echo        [PRESS ENTER TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto schedule
+)
+
+if errorlevel 4 (
+	color 0c
+	echo Error, the command "%frec%" wasn't recognized
+	echo.
+	echo        [PRESS ENTER TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto schedule
+)
+
+if errorlevel 5 (
+	color 0c
+	echo Error, the command "%frec%" wasn't recognized
+	echo.
+	echo        [PRESS ENTER TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto schedule
+)
+
+if errorlevel 6 (
+	color 0c
+	echo Error, the command "%frec%" wasn't recognized
+	echo.
+	echo        [PRESS ENTER TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto schedule
+)
+echo.
+echo Applying settings...
+echo TASKNAME:PCSHUTDOWN > settings.dat
+echo SCHEDULE:%dt% %tm% >> settings.dat
+echo FREQUENCY:%frec% >> settings.dat
+schtasks /create /sc %frec% /tn PCSHUTDOWN /tr "shutdown /h" /st %tm% /sd %dt% >nul
+if errorlevel 1 (
+	color 0c
+	echo An error ocurred!
+	echo Restart the program and try again
+	echo.
+	echo        [PRESS ENTER TO QUIT]
+	pause>nul
+	cls&goto finish
+)
+echo.
+echo SUCESS: The computer has been programmed to shut down on %dt% at %tm% successfully
+echo.
+echo         [PRESS ENTER GO TO MENU]
+echo.
 pause>nul
+cls&goto main
 
-:settings
+:schedule2
 ::TODO
+echo Under construction
+echo.
 pause>nul
+cls&goto main
+
+
+:options
+echo Options Menu
+echo.
+echo What you want?
+echo.
+echo 1) Change colors theme
+echo     0) Go back
+echo.
+set /p var="Type here: "
+echo.
+if "%var%" == "1" goto colortheme
+if "%var%" == "0" cls&goto main
+
+color 0c
+echo Error, the command "%var%" wasn't recognized
+echo.
+echo        [PRESS ENTER TYPE AGAIN]
+pause>nul
+color %themec%
+cls&goto options
+
+:colortheme
+cls
+echo     ##############################################################################
+echo     # " _____  _____  ____   _____  _____    ____  __ __  _____  __  __  _____ " #
+echo     # "/     \/  _  \/  _/  /  _  \/  _  \  /    \/  |  \/   __\/  \/  \/   __\" #
+echo     # "|  |--||  |  ||  |---|  |  ||  _  <  \-  -/|  _  ||   __||  \/  ||   __|" #
+echo     # "\_____/\_____/\_____/\_____/\__|\_/   |__| \__|__/\_____/\__ \__/\_____/" #
+echo     # "                                                                        " #
+echo     ##############################################################################
+echo.
+echo Choose a theme
+echo.
+echo 1) White Whale
+echo 2) Black horizon
+echo 3) Good vibes
+echo 4) Elecktro shock
+echo 5) PinKY
+echo 6) Sky Bloom
+echo 7) Green hills
+echo 8) Elegant
+echo 9) Contrast
+echo     0) Go back
+echo.
+set /p var="which you want: "
+if "%var%" == "1" (
+	set themec="f1"
+	color %themec%
+	cls&goto colortheme
+)
+if "%var%" == "2" (
+	set themec="0a"
+	color %themec%
+	cls&goto colortheme
+)
+
+if "%var%" == "3" (
+	set themec="e8"
+	color %themec%
+	cls&goto colortheme
+	
+)
+if "%var%" == "4" (
+	set themec="10"
+	color %themec%
+	cls&goto colortheme
+	
+)
+if "%var%" == "5" (
+	set themec="56"
+	color %themec%
+	cls&goto colortheme
+	
+)
+if "%var%" == "6" (
+	set themec="9f"
+	color %themec%
+	cls&goto colortheme
+	
+)
+if "%var%" == "7" (
+	set themec="ae"
+	color %themec%
+	cls&goto colortheme
+	
+)
+if "%var%" == "8" (
+	set themec="87"
+	color %themec%
+	cls&goto colortheme
+	
+)
+if "%var%" == "9" (
+	set themec="0f"
+	color %themec%
+	cls&goto colortheme
+	
+)
+
+if "%var%" == "0" cls&goto options
+
+color 0c
+echo Error, the command "%var%" wasn't recognized
+echo.
+echo        [PRESS ENTER TYPE AGAIN]
+pause>nul
+color %themec%
+cls&goto main
 
 :finish
+echo THEME:%themec% >> settings.dat
+echo END >> settings.dat
 exit
