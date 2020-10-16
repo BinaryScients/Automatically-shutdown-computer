@@ -9,14 +9,14 @@ With just a few commands you can program your computer to shut down at the time 
 1. Open the "Sleeping aid" program.
 
 2. Choose one of the options.
-![alt image](/resources/presentation.jpg)
+![alt image](/resources/presentation.png)
 3. Choose the time that you prefer the computer to turn off.
-![alt image](/resources/first-option.jpg.jpg)
+![alt image](/resources/first-option.jpg.png)
 4. Choose the date that you want the rule to start taking effect.
-![alt image](/resources/secound-option.jpg)
+![alt image](/resources/secound-option.png)
 5. Choose the frequency at which the computer will shut down. For example, weekly.
-![alt image](/resources/third-option.jpg)
+![alt image](/resources/third-option.png)
 6. Ready, just close the program and Windows will automatically shut down at the time you chose.
-![alt image](/resources/last-option.jpg)
+![alt image](/resources/last-option.png)
 
 Very simple, isn't it? :)
