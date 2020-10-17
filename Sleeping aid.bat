@@ -1,6 +1,6 @@
 :: Author: Willian Azevedo 
 :: Created on: 11th, October, 2020 at 01:15 P.M. (GMT-3) 
-:: Last Modification on: 14th, October, 2020 at 12:12 A.M. (GMT-3) 
+:: Last Modification on: 16th, October, 2020 at 07:40 P.M. (GMT-3) 
 :: Sleeping Aid - Automatic shutdown program version 0.1.5 Alpha 
 :: 
 :: This is a simple batch program for automatically shutdown pc
@@ -9,17 +9,13 @@
 :: Implement an option that verify if already has a task schedule [-] (in progress)
 :: Fix somethings
 
-:: Fix the color theme choice menu problems
-:: Fix the menus of the pc shutdown
-
-
-
+:: Fix the color theme choice menu problems [x] +-
+:: Fix the menus of the pc shutdown [-] (in progress)
+SETLOCAL DISABLEDELAYEDEXPANSION
+@echo off
 set themec=0a
-:load
-:: TODO
 
 :start
-@echo off
 color %themec%
 title Sleeping aid - Automatic shutdown program (v0.1.5 alpha)
 cls
@@ -120,82 +116,34 @@ echo 6) Monthly
 echo.
 set /p frec="Type here: "
 
-if errorlevel 1 (
+if "%frec%" == "1" (
+	set frec=ONCE
+) else if "%frec%" == "2" (
+	set frec=MINUTE
+) else if "%frec%" == "3" (
+	set frec=HOURLY
+) else if "%frec%" == "4" (
+	set frec=DAILY
+) else if "%frec%" == "5" (
+	set frec=WEEKLY
+) else if "%frec%" == "6" (
+	set frec=MONTHLY
+) else (
 	color 0c
-	echo Error, the command "%sc%" wasn't recognized
+	echo.
+	echo Error, the command "%frec%" is invalid!
 	echo.
 	echo        [PRESS ENTER TYPE AGAIN]
 	pause>nul
 	color %themec%
 	cls&goto schedule1
 )
+echo The frequency that you choose
+echo %frec%
+echo.
+pause>nul
+exit
 
-if "%frec%" == "1" set frec=ONCE
-if "%frec%" == "2" set frec=MINUTE
-if "%frec%" == "3" set frec=HOURLY
-if "%frec%" == "4" set frec=DAILY
-if "%frec%" == "5" set frec=WEEKLY
-if "%frec%" == "6" set frec=MONTHLY
-
-if errorlevel 1 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule1
-)
-
-if errorlevel 2 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule1
-)
-
-if errorlevel 3 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule1
-)
-
-if errorlevel 4 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule1
-)
-
-if errorlevel 5 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule1
-)
-
-if errorlevel 6 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule1
-)
 echo.
 echo Applying settings...
 echo TASKNAME:PCSHUTDOWN > settings.dat
@@ -255,9 +203,22 @@ echo 6) Monthly
 echo.
 set /p frec="Type here: "
 
-if errorlevel 1 (
+if "%frec%" == "1" (
+	set frec=ONCE
+) else if "%frec%" == "2" (
+	set frec=MINUTE
+) else if "%frec%" == "3" (
+	set frec=HOURLY
+) else if "%frec%" == "4" (
+	set frec=DAILY
+) else if "%frec%" == "5" (
+	set frec=WEEKLY
+) else if "%frec%" == "6" (
+	set frec=MONTHLY
+) else (
 	color 0c
-	echo Error, the command "%sc%" wasn't recognized
+	echo.
+	echo Error, the command "%frec%" is invalid!
 	echo.
 	echo        [PRESS ENTER TYPE AGAIN]
 	pause>nul
@@ -265,81 +226,12 @@ if errorlevel 1 (
 	cls&goto schedule2
 )
 
-if "%frec%" == "1" set frec=ONCE
-if "%frec%" == "2" set frec=MINUTE
-if "%frec%" == "3" set frec=HOURLY
-if "%frec%" == "4" set frec=DAILY
-if "%frec%" == "5" set frec=WEEKLY
-if "%frec%" == "6" set frec=MONTHLY
-
-if errorlevel 1 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule2
-)
-
-if errorlevel 2 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule2
-)
-
-if errorlevel 3 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule2
-)
-
-if errorlevel 4 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule2
-)
-
-if errorlevel 5 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule2
-)
-
-if errorlevel 6 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto schedule2
-)
 echo.
 echo Applying settings...
-echo TASKNAME:PCRESTART > settings.dat
-echo SCHEDULE:%dt% %tm% >> settings.dat
-echo FREQUENCY:%frec% >> settings.dat
 schtasks /create /sc %frec% /tn PCRESTART /tr "shutdown /r" /st %tm% /sd %dt% >nul
-if errorlevel 1 (
+if errorlevel 0 (
 	color 0c
-	echo An error ocurred!
+	echo An Error ocurred!
 	echo Restart the program and try again
 	echo.
 	echo        [PRESS ENTER TO QUIT]
@@ -461,55 +353,55 @@ echo     0) Go back
 echo.
 set /p var="which you want: "
 if "%var%" == "1" (
-	set themec="f1"
-	color %themec%
+	set themec=f1
+	color f1
 	cls&goto colortheme
 )
 if "%var%" == "2" (
-	set themec="0a"
-	color %themec%
+	set themec=0a
+	color 0a
 	cls&goto colortheme
 )
 
 if "%var%" == "3" (
-	set themec="e8"
-	color %themec%
+	set themec=e8
+	color e8
 	cls&goto colortheme
 	
 )
 if "%var%" == "4" (
-	set themec="10"
-	color %themec%
+	set themec=10
+	color 10
 	cls&goto colortheme
 	
 )
 if "%var%" == "5" (
-	set themec="56"
-	color %themec%
+	set themec=56
+	color 56
 	cls&goto colortheme
 	
 )
 if "%var%" == "6" (
-	set themec="9f"
-	color %themec%
+	set themec=9f
+	color 9f
 	cls&goto colortheme
 	
 )
 if "%var%" == "7" (
-	set themec="ae"
-	color %themec%
+	set themec=ae
+	color ae
 	cls&goto colortheme
 	
 )
 if "%var%" == "8" (
-	set themec="87"
-	color %themec%
+	set themec=87
+	color 87
 	cls&goto colortheme
 	
 )
 if "%var%" == "9" (
-	set themec="0f"
-	color %themec%
+	set themec=0f
+	color 0f
 	cls&goto colortheme
 	
 )
@@ -522,9 +414,7 @@ echo.
 echo        [PRESS ENTER TYPE AGAIN]
 pause>nul
 color %themec%
-cls&goto main
+cls&goto colortheme
 
 :finish
-echo THEME:%themec% >> settings.dat
-echo END >> settings.dat
 exit
