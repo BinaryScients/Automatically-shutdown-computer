@@ -1,19 +1,22 @@
 :: Author: Willian Azevedo 
 :: Created on: 11th, October, 2020 at 01:15 P.M. (GMT-3) 
-:: Last Modification on: 16th, October, 2020 at 07:40 P.M. (GMT-3) 
-:: Sleeping Aid - Automatic shutdown program version 0.1.5 Alpha 
+:: Last Modification on: 17th, October, 2020 at 02:35 A.M. (GMT-3) 
+:: Sleeping Aid - Automatic shutdown program version 0.1.15 Alpha 
 :: 
 :: This is a simple batch program for automatically shutdown pc
 
 ::TODO
 :: Implement an option that verify if already has a task schedule [-] (in progress)
 :: Fix somethings
+:: Create a Help Menu
 
 :: Fix the color theme choice menu problems [x] +-
 :: Fix the menus of the pc shutdown [-] (in progress)
 SETLOCAL DISABLEDELAYEDEXPANSION
 @echo off
-set themec=0a
+
+:loadtheme
+set /p themec=<data/theme.dat
 
 :start
 color %themec%
@@ -73,7 +76,7 @@ echo.
 pause>nul
 shutdown /s /f
 echo turning off the PC...
-ping 127.0.0.1 -n 3 >nul
+ping 127.0.0.1 -n 1 >nul
 cls&goto finish
 
 :: schtasks /create /sc daily /tn PCSHUTDOWN /tr cmd shutdown /s /f /c "The windows will finish" /st 22:30 /sd 03/01/2020
@@ -138,31 +141,23 @@ if "%frec%" == "1" (
 	color %themec%
 	cls&goto schedule1
 )
-echo The frequency that you choose
-echo %frec%
-echo.
-pause>nul
-exit
 
 echo.
 echo Applying settings...
-echo TASKNAME:PCSHUTDOWN > settings.dat
-echo SCHEDULE:%dt% %tm% >> settings.dat
-echo FREQUENCY:%frec% >> settings.dat
-schtasks /create /sc %frec% /tn PCSHUTDOWN /tr "shutdown /h" /st %tm% /sd %dt% >nul
-if errorlevel 1 (
+schtasks /create /sc %frec% /tn PCSHUTDOWN /tr "shutdown /s" /st %tm% /sd %dt% >nul
+if %ERRORLEVEL% NEQ 0 (
 	color 0c
-	echo An error ocurred!
-	echo Restart the program and try again
+	echo Pay attention and now type a valid option
 	echo.
-	echo        [PRESS ENTER TO QUIT]
+	echo        [PRESS ENTER TO TYPE AGAIN]
 	pause>nul
-	cls&goto finish
+	color %themec%
+	cls&goto schedule1
 )
 echo.
-echo SUCCESS: The computer has been programmed to shut down on %dt% at %tm% successfully
+echo SUCCESS: The computer has been programmed to shutdown on %dt% at %tm% %frec% successfully
 echo.
-echo         [PRESS ENTER GO TO MENU]
+echo         [PRESS ENTER TO GO TO MENU]
 echo.
 pause>nul
 cls&goto main
@@ -175,7 +170,7 @@ if errorlevel 1 (
 	color 0c
 	echo Error, the command "%sc%" wasn't recognized
 	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
+	echo        [PRESS ENTER TO TYPE AGAIN]
 	pause>nul
 	color %themec%
 	cls&goto schedule2
@@ -186,7 +181,7 @@ if errorlevel 1 (
 	color 0c
 	echo Error, the command "%dt%" wasn't recognized
 	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
+	echo        [PRESS ENTER TO TYPE AGAIN]
 	pause>nul
 	color %themec%
 	cls&goto schedule2
@@ -220,7 +215,7 @@ if "%frec%" == "1" (
 	echo.
 	echo Error, the command "%frec%" is invalid!
 	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
+	echo        [PRESS ENTER TO TYPE AGAIN]
 	pause>nul
 	color %themec%
 	cls&goto schedule2
@@ -229,19 +224,20 @@ if "%frec%" == "1" (
 echo.
 echo Applying settings...
 schtasks /create /sc %frec% /tn PCRESTART /tr "shutdown /r" /st %tm% /sd %dt% >nul
-if errorlevel 0 (
+if %ERRORLEVEL% NEQ 0 (
 	color 0c
-	echo An Error ocurred!
-	echo Restart the program and try again
+	echo Pay attention and now type a valid option
 	echo.
-	echo        [PRESS ENTER TO QUIT]
+	echo        [PRESS ENTER TO TYPE AGAIN]
 	pause>nul
-	cls&goto finish
+	color %themec%
+	cls&goto schedule2
 )
+echo 
 echo.
-echo SUCCESS: The computer has been programmed to restart on %dt% at %tm% successfully
+echo SUCCESS: The computer has been programmed to restart on %dt% at %tm% %frec% successfully
 echo.
-echo         [PRESS ENTER GO TO MENU]
+echo         [PRESS ENTER TO GO TO MENU]
 echo.
 pause>nul
 cls&goto main
@@ -251,61 +247,59 @@ echo Delete a schedule
 echo.
 echo.
 echo Choose what schedule you want to delete:
-echo.
-set ps="PCSHUTDOWN"
-set pr="PCRESTART"
-schtasks /query /tn "PCSHUTDOWN"
-if not errorlevel 1 (
-	echo 1) 
-	schtasks /query /tn "PCSHUTDOWN"
-) else (
-	schtasks /query /tn "PCRESTART"
-	if not errorlevel 1 (
-		echo 1)
-		set ps="PCSHUTDOWN"
-		schtasks /query /tn "PCRESTART"
-	) else (
-		echo No schedules to show
-		echo.
-		echo         [PRESS ENTER GO TO MENU]
-		echo.
-		pause>nul
-		cls&goto main
-	)
-)
-schtasks /query /tn "PCRESTART"
-if not errorlevel 1 (
-	echo 2)
-	schtasks /query /tn "PCRESTART"
-)
-set /p opt="Type here: "
-if "%opt%" == "1" schtasks /delete /tn %ps%
-if "%opt%" == "2" schtasks /delete /tn %pr%
-if errorlevel 1 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
-	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
-	pause>nul
-	color %themec%
-	cls&goto deletesch
-)
 
-if errorlevel 2 (
-	color 0c
-	echo Error, the command "%frec%" wasn't recognized
+if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat" (
+	color c4
 	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
+	echo FATAL ERROR
+	echo.
+	echo DATABASE_ERROR: -227704
+	echo.
+	echo Can't localize primary schedule
+	echo.
+	echo [POSSIBLE SOLUTION]:
+	echo GO TO OPTIONS } CLEAN ALL THE SCHEDULES } CONFIRM
+	echo         [PRESS ENTER GO TO MENU]
+	echo.
 	pause>nul
 	color %themec%
-	cls&goto deletesch
+	cls&goto main
 )
+if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat" (
+	color c4
+	echo.
+	echo FATAL ERROR
+	echo.
+	echo DATABASE_ERROR: -227705
+	echo.
+	echo Can't localize primary schedule
+	echo.
+	echo [POSSIBLE SOLUTION]:
+	echo GO TO OPTIONS } CLEAN ALL THE SCHEDULES } CONFIRM
+	echo         [PRESS ENTER GO TO MENU]
+	echo.
+	pause>nul
+	color %themec%
+	cls&goto main
+)
+if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN*" goto empty
+if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN*" goto empty
+
+echo IN CONSTRUCTION...
 echo.
 echo         [PRESS ENTER GO TO MENU]
 echo.
 pause>nul
 cls&goto main
 
+:empty
+echo.
+echo No schedules to show
+echo.
+echo         [PRESS ENTER GO TO MENU]
+echo.
+pause>nul
+cls&goto main
 
 :options
 echo Options Menu
@@ -313,11 +307,13 @@ echo.
 echo What you want?
 echo.
 echo 1) Change colors theme
+echo 2) Clean all the schedules
 echo     0) Go back
 echo.
 set /p var="Type here: "
 echo.
 if "%var%" == "1" goto colortheme
+if "%var%" == "2" goto clean
 if "%var%" == "0" cls&goto main
 
 color 0c
@@ -416,5 +412,11 @@ pause>nul
 color %themec%
 cls&goto colortheme
 
+:clean
+echo TODO
+pause>nul
+exit
+
 :finish
+echo %themec%>data\theme.dat
 exit
