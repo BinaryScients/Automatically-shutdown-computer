@@ -1,31 +1,51 @@
 :: Author: Willian Azevedo 
 :: Created on: 11th, October, 2020 at 01:15 P.M. (GMT-3) 
-:: Last Modification on: 17th, October, 2020 at 02:35 A.M. (GMT-3) 
-:: Sleeping Aid - Automatic shutdown program version 0.1.15 Alpha 
+:: Last Modification on: 17th, October, 2020 at 11:42 P.M. (GMT-3) 
+:: Sleeping Aid - Automatic shutdown program version 0.1.20 Alpha 
 :: 
 :: This is a simple batch program for automatically shutdown pc
 
 ::TODO
-:: Implement an option that verify if already has a task schedule [-] (in progress)
-:: Fix somethings
+:: Implement an option that verify if already has a task schedule [-] (in progress) -> FIX THE BUGS, RESTRUCT ALL THE LOGIC
+:: Change the rix and the six permitions
 :: Create a Help Menu
-
-:: Fix the color theme choice menu problems [x] +-
 :: Fix the menus of the pc shutdown [-] (in progress)
 SETLOCAL DISABLEDELAYEDEXPANSION
 @echo off
 
-:loadtheme
-set /p themec=<data/theme.dat
+:load
+echo Loading...
+if not exist data (
+	md data
+	echo 0a >data\theme.dat
+	md "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}"
+	echo 0 >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat"
+	echo 0 >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat"
+	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat"
+	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat"
+	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}"
+)
+if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}" (
+	md "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}"
+	echo 0 > "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat"
+	echo 0 > "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat"
+	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat"
+	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat"
+	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}"
+)
+if not exist "data\theme.dat" echo 0a >data\theme.dat
+set /p shutx=<data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat
+set /p restx=<data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat
+set /p themec=<data\theme.dat
 
 :start
 color %themec%
-title Sleeping aid - Automatic shutdown program (v0.1.5 alpha)
+title Sleeping aid - Automatic shutdown program (v0.1.20 alpha)
 cls
 
 :main
 echo Sleeping Aid - Automatic Shutdown Program for Windows
-echo version 0.1.5 Alpha
+echo version 0.1.20 Alpha
 echo.
 echo        _    _  ____  __    ___  _____  __  __  ____ 
 echo       ( \/\/ )( ___)(  )  / __)(  _  )(  \/  )( ___)
@@ -143,8 +163,73 @@ if "%frec%" == "1" (
 )
 
 echo.
+echo Verifing...
+if exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN%shutx%" (
+	echo There is already an appointment, do you want to overwrite it
+	echo.
+	echo [1] Yes
+	echo [2] No
+	echo     [0] Cancel
+	echo.
+	set /p cho="Type here: "
+	echo "%cho%"
+	if "%cho%" == "1" (
+		schtasks /delete /f /tn "PCSHUTDOWN%shutx%" >nul
+		if %ERRORLEVEL% NEQ 0 (
+			color 0c
+			echo Error, something wrong
+			echo.
+			echo        [PRESS ENTER TO TYPE AGAIN]
+			pause>nul
+			color %themec%
+			cls&goto schedule1
+		)
+		schtasks /create /sc %frec% /tn "PCSHUTDOWN%shutx%" /tr "shutdown /s" /st %tm% /sd %dt%
+		if %ERRORLEVEL% NEQ 0 (
+			color 0c
+			echo Pay attention and now type a valid option
+			echo.
+			echo        [PRESS ENTER TO TYPE AGAIN]
+			pause>nul
+			color %themec%
+			cls&goto schedule1
+		)
+		echo DATE:%dt% TIME:%tm% FREQUENCY:%frec% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN%shutx%"
+		echo.
+		echo SUCCESS: The computer has been programmed to shutdown on %dt% at %tm% %frec% successfully
+		echo.
+		echo         [PRESS ENTER TO GO TO MENU]
+		echo.
+		pause>nul
+		cls&goto main
+	) else if "%cho%" == "2" (
+		echo.
+		echo An other schedule will be created
+		echo.
+		echo        [PRESS ENTER TO CONTINUE]
+		pause>nul
+		set /a temp=%shutx% + 1
+		if %temp% GTR 4 (
+			echo.
+			echo ERROR, the limit of schedules for shutdown is only 5
+			echo.
+			echo [POSSIBLE SOLUTIONS]:
+			echo -You can overwrite an existing schedule
+			echo -Or you can delete an existing schedule by going to the Main menu } Delete schedule
+			echo.
+			echo         [PRESS ENTER TO GO TO MENU]
+			echo.
+			pause>nul
+			cls&goto main
+		)
+		set shutx=%temp%
+		echo %shutx% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat"
+	) else if "%cho%" == "0" (
+		cls&goto main
+	)
+)
 echo Applying settings...
-schtasks /create /sc %frec% /tn PCSHUTDOWN /tr "shutdown /s" /st %tm% /sd %dt% >nul
+schtasks /create /sc %frec% /tn "PCSHUTDOWN%shutx%" /tr "shutdown /s" /st %tm% /sd %dt%
 if %ERRORLEVEL% NEQ 0 (
 	color 0c
 	echo Pay attention and now type a valid option
@@ -154,6 +239,7 @@ if %ERRORLEVEL% NEQ 0 (
 	color %themec%
 	cls&goto schedule1
 )
+echo DATE:%dt% TIME:%tm% FREQUENCY:%frec% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN%shutx%"
 echo.
 echo SUCCESS: The computer has been programmed to shutdown on %dt% at %tm% %frec% successfully
 echo.
@@ -222,8 +308,64 @@ if "%frec%" == "1" (
 )
 
 echo.
+echo Verifing...
+if exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCRESTART%restx%" (
+	echo There is already an appointment, do you want to overwrite it?
+	echo.
+	echo [1] Yes
+	echo [2] No
+	echo     [0] Cancel
+	echo.
+	set /p res="Type here: "
+	
+	if "%res%" == "1" (
+		schtasks /delete /f /tn "PCRESTART%restx%" >nul
+		schtasks /create /sc %frec% /tn "PCRESTART%restx%" /tr "shutdown /r" /st %tm% /sd %dt%
+		if %ERRORLEVEL% NEQ 0 (
+			color 0c
+			echo Pay attention and now type a valid option
+			echo.
+			echo        [PRESS ENTER TO TYPE AGAIN]
+			pause>nul
+			color %themec%
+			cls&goto schedule1
+		)
+		echo DATE:%dt% TIME:%tm% FREQUENCY:%frec% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCRESTART%restx%"
+		echo.
+		echo SUCCESS: The computer has been programmed to restart on %dt% at %tm% %frec% successfully
+		echo.
+		echo         [PRESS ENTER TO GO TO MENU]
+		echo.
+		pause>nul
+		cls&goto main
+	)
+	if "%res%" == "2" (
+		echo.
+		echo An other schedule will be created
+		echo.
+		echo        [PRESS ENTER TO CONTINUE]
+		pause>nul
+		set /a temp=%restx% + 1
+		if %temp% GTR 4 (
+			echo.
+			echo ERROR, the limit of schedules for restart is only 5
+			echo.
+			echo [POSSIBLE SOLUTIONS]:
+			echo -You can overwrite an existing schedule
+			echo -Or you can delete an existing schedule by going to the Main menu } Delete schedule
+			echo.
+			echo         [PRESS ENTER TO GO TO MENU]
+			echo.
+			pause>nul
+			cls&goto main
+		)
+		set restx=%temp%
+		echo %restx% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat"
+	)
+	if "%res%" == "0" cls&goto main
+)
 echo Applying settings...
-schtasks /create /sc %frec% /tn PCRESTART /tr "shutdown /r" /st %tm% /sd %dt% >nul
+schtasks /create /sc %frec% /tn "PCRESTART%restx%" /tr "shutdown /r" /st %tm% /sd %dt% >nul
 if %ERRORLEVEL% NEQ 0 (
 	color 0c
 	echo Pay attention and now type a valid option
@@ -233,6 +375,7 @@ if %ERRORLEVEL% NEQ 0 (
 	color %themec%
 	cls&goto schedule2
 )
+echo DATE:%dt% TIME:%tm% FREQUENCY:%frec% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCRESTART%restx%"
 echo 
 echo.
 echo SUCCESS: The computer has been programmed to restart on %dt% at %tm% %frec% successfully
@@ -282,8 +425,18 @@ if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat" (
 	color %themec%
 	cls&goto main
 )
-if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN*" goto empty
-if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN*" goto empty
+set ver=2
+if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN*" set /a ver=%ver%-1 >nul
+if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN*" set /a ver=%ver%-1 >nul
+
+if %ver% == 0 goto empty
+
+echo All shutdown tasks
+type data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN*
+
+echo All restart tasks
+type data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCRESTART*
+
 
 echo IN CONSTRUCTION...
 echo.
