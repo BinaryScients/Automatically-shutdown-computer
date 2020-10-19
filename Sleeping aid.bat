@@ -1,7 +1,7 @@
 :: Author: Willian Azevedo 
 :: Created on: 11th, October, 2020 at 01:15 P.M. (GMT-3) 
-:: Last Modification on: 17th, October, 2020 at 11:42 P.M. (GMT-3) 
-:: Sleeping Aid - Automatic shutdown program version 0.1.20 Alpha 
+:: Last Modification on: 18th, October, 2020 at 01:12 P.M. (GMT-3) 
+:: Sleeping Aid - Automatic shutdown program version 0.1.35 Alpha 
 :: 
 :: This is a simple batch program for automatically shutdown pc
 
@@ -10,42 +10,40 @@
 :: Change the rix and the six permitions
 :: Create a Help Menu
 :: Fix the menus of the pc shutdown [-] (in progress)
-SETLOCAL DISABLEDELAYEDEXPANSION
 @echo off
+SETLOCAL DISABLEDELAYEDEXPANSION
 
 :load
+set accpathxcbd="data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}"
 echo Loading...
 if not exist data (
 	md data
 	echo 0a >data\theme.dat
-	md "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}"
-	echo 0 >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat"
-	echo 0 >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat"
-	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat"
-	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat"
-	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}"
+	md %accpathxcbd%
+	attrib +h +s %accpathxcbd%
+	echo "0">"%accpathxcbd%\six.dat"
+	echo "0">"%accpathxcbd%\rix.dat"
 )
-if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}" (
-	md "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}"
-	echo 0 > "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat"
-	echo 0 > "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat"
-	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat"
-	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat"
-	attrib +h +s "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}"
+if not exist %accpathxcbd% (
+	md %accpathxcbd%
+	attrib +h +s %accpathxcbd%
+	echo "0">"%accpathxcbd%\six.dat"
+	echo "0">"%accpathxcbd%\rix.dat"
 )
 if not exist "data\theme.dat" echo 0a >data\theme.dat
-set /p shutx=<data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat
-set /p restx=<data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat
+set /p shutx=<%accpathxcbd%\six.dat
+set /p restx=<%accpathxcbd%\rix.dat
 set /p themec=<data\theme.dat
 
 :start
 color %themec%
-title Sleeping aid - Automatic shutdown program (v0.1.20 alpha)
+mode 90, 30
+title Sleeping aid - Automatic shutdown program (v0.1.35 alpha)
 cls
 
 :main
 echo Sleeping Aid - Automatic Shutdown Program for Windows
-echo version 0.1.20 Alpha
+echo version 0.1.35 Alpha
 echo.
 echo        _    _  ____  __    ___  _____  __  __  ____ 
 echo       ( \/\/ )( ___)(  )  / __)(  _  )(  \/  )( ___)
@@ -68,6 +66,7 @@ echo 2) Schedule the pc to shutdown
 echo 3) Schedule the pc to restart
 echo 4) Delete schedule
 echo 5) Go to options
+echo 6) Help
 echo     0) exit
 echo.
 set /p res="Type the number of the option that you want: "
@@ -77,6 +76,7 @@ if "%res%" == "2" cls&goto schedule1
 if "%res%" == "3" cls&goto schedule2
 if "%res%" == "4" cls&goto deletesch
 if "%res%" == "5" cls&goto options
+if "%res%" == "6" cls&goto help
 if "%res%" == "0" cls&goto finish
 
 color 0c
@@ -99,15 +99,11 @@ echo turning off the PC...
 ping 127.0.0.1 -n 1 >nul
 cls&goto finish
 
-:: schtasks /create /sc daily /tn PCSHUTDOWN /tr cmd shutdown /s /f /c "The windows will finish" /st 22:30 /sd 03/01/2020
-:: schtasks /create /sc <scheduletype> /tn <taskname> /tr <taskrun> [/s <computer> [/u [<domain>\]<user> [/p <password>]]] [/ru {[<domain>\]<user> | system}] [/rp <password>] [/mo <modifier>] [/d <day>[,<day>...] | *] [/m <month>[,<month>...]] [/i <idletime>] [/st <starttime>] [/ri <interval>] [{/et <endtime> | /du <duration>} [/k]] [/sd <startdate>] [/ed <enddate>] [/it] [/z] [/f]
-:: see this: https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks-create
-
 :schedule1
 echo Schedule the pc to shutdown
 echo.
 set /p tm="Enter the time (24h base time HH:MM) that you want the pc to turn off: "
-if errorlevel 1 (
+if "%ERRORLEVEL%" NEQ "0" (
 	color 0c
 	echo Error, the command "%sc%" wasn't recognized
 	echo.
@@ -118,7 +114,7 @@ if errorlevel 1 (
 )
 echo.
 set /p dt="Enter the date (DD/MM/YYYY) you want this rule to start taking effect (by default it's considered today, type today for default option): "
-if errorlevel 1 (
+if "%ERRORLEVEL%" NEQ "0" (
 	color 0c
 	echo Error, the command "%dt%" wasn't recognized
 	echo.
@@ -156,7 +152,7 @@ if "%frec%" == "1" (
 	echo.
 	echo Error, the command "%frec%" is invalid!
 	echo.
-	echo        [PRESS ENTER TYPE AGAIN]
+	echo        [PRESS ENTER TO TYPE AGAIN]
 	pause>nul
 	color %themec%
 	cls&goto schedule1
@@ -164,82 +160,71 @@ if "%frec%" == "1" (
 
 echo.
 echo Verifing...
-if exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN%shutx%" (
-	echo There is already an appointment, do you want to overwrite it
-	echo.
-	echo [1] Yes
-	echo [2] No
-	echo     [0] Cancel
-	echo.
-	set /p cho="Type here: "
-	echo "%cho%"
-	if "%cho%" == "1" (
-		schtasks /delete /f /tn "PCSHUTDOWN%shutx%" >nul
-		if %ERRORLEVEL% NEQ 0 (
-			color 0c
-			echo Error, something wrong
-			echo.
-			echo        [PRESS ENTER TO TYPE AGAIN]
-			pause>nul
-			color %themec%
-			cls&goto schedule1
-		)
-		schtasks /create /sc %frec% /tn "PCSHUTDOWN%shutx%" /tr "shutdown /s" /st %tm% /sd %dt%
-		if %ERRORLEVEL% NEQ 0 (
-			color 0c
-			echo Pay attention and now type a valid option
-			echo.
-			echo        [PRESS ENTER TO TYPE AGAIN]
-			pause>nul
-			color %themec%
-			cls&goto schedule1
-		)
-		echo DATE:%dt% TIME:%tm% FREQUENCY:%frec% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN%shutx%"
-		echo.
-		echo SUCCESS: The computer has been programmed to shutdown on %dt% at %tm% %frec% successfully
-		echo.
-		echo         [PRESS ENTER TO GO TO MENU]
-		echo.
-		pause>nul
-		cls&goto main
-	) else if "%cho%" == "2" (
-		echo.
-		echo An other schedule will be created
-		echo.
-		echo        [PRESS ENTER TO CONTINUE]
-		pause>nul
-		set /a temp=%shutx% + 1
-		if %temp% GTR 4 (
-			echo.
-			echo ERROR, the limit of schedules for shutdown is only 5
-			echo.
-			echo [POSSIBLE SOLUTIONS]:
-			echo -You can overwrite an existing schedule
-			echo -Or you can delete an existing schedule by going to the Main menu } Delete schedule
-			echo.
-			echo         [PRESS ENTER TO GO TO MENU]
-			echo.
-			pause>nul
-			cls&goto main
-		)
-		set shutx=%temp%
-		echo %shutx% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat"
-	) else if "%cho%" == "0" (
-		cls&goto main
-	)
-)
-echo Applying settings...
-schtasks /create /sc %frec% /tn "PCSHUTDOWN%shutx%" /tr "shutdown /s" /st %tm% /sd %dt%
-if %ERRORLEVEL% NEQ 0 (
+if not exist "%accpathxcbd%\PCSHUTDOWN%shutx%" goto apply_schedule1
+
+:verify_schedule1
+echo There is already an appointment, do you want to overwrite it
+echo.
+echo 1) Yes
+echo 2) No
+echo     0) Cancel
+echo.
+set /p res="Type here: "
+
+if "%res%" == "1" (
+		goto apply_schedule1
+) else if "%res%" == "2" (
+	goto new_schedule1
+) else if "%res%" == "0" (
+	cls&goto main
+) else (
 	color 0c
-	echo Pay attention and now type a valid option
+	echo.
+	echo Error, the command "%res%" is invalid!
 	echo.
 	echo        [PRESS ENTER TO TYPE AGAIN]
 	pause>nul
 	color %themec%
 	cls&goto schedule1
 )
-echo DATE:%dt% TIME:%tm% FREQUENCY:%frec% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN%shutx%"
+
+:new_schedule1
+echo.
+echo An other schedule will be created
+echo.
+echo        [PRESS ENTER TO CONTINUE]
+pause>nul
+echo.
+set /a t=1+%shutx% >nul
+if "%t%" GTR "4" (
+	echo.
+	echo ERROR, the limit of schedules for shutdown is only 5
+	echo.
+	echo [POSSIBLE SOLUTIONS]:
+	echo -You can overwrite an existing schedule
+	echo -Or you can delete an existing schedule by going to the Main menu } Delete schedule
+	echo.
+	echo         [PRESS ENTER TO GO TO MENU]
+	echo.
+	pause>nul
+	cls&goto main
+)
+set /a shutx="%t%" + "0" >nul
+echo "%t%">"%accpathxcbd%\six.dat"
+
+:apply_schedule1
+echo Applying settings...
+schtasks /create /sc %frec% /tn PCSHUTDOWN%shutx% /tr "shutdown /s" /st %tm% /sd %dt%
+if "%ERRORLEVEL%" NEQ "0" (
+	color 0c
+	echo.
+	echo        [PRESS ENTER TO TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto schedule1
+)
+set /a new=%shutx% + 0
+echo : %new% NAME:PCSHUTDOWN%new% DATE:%dt% TIME:%tm% FREQUENCY:%frec%>"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN%shutx%"
 echo.
 echo SUCCESS: The computer has been programmed to shutdown on %dt% at %tm% %frec% successfully
 echo.
@@ -252,7 +237,7 @@ cls&goto main
 echo Schedule the pc to restart
 echo.
 set /p tm="Enter the time (24h base time HH:MM) that you want the pc to restart: "
-if errorlevel 1 (
+if "%ERRORLEVEL%" NEQ "0" (
 	color 0c
 	echo Error, the command "%sc%" wasn't recognized
 	echo.
@@ -263,7 +248,7 @@ if errorlevel 1 (
 )
 echo.
 set /p dt="Enter the date (DD/MM/YYYY) you want this rule to start taking effect (by default it's considered today, type today for default option): "
-if errorlevel 1 (
+if "%ERRORLEVEL%" NEQ "0" (
 	color 0c
 	echo Error, the command "%dt%" wasn't recognized
 	echo.
@@ -309,74 +294,73 @@ if "%frec%" == "1" (
 
 echo.
 echo Verifing...
-if exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCRESTART%restx%" (
-	echo There is already an appointment, do you want to overwrite it?
-	echo.
-	echo [1] Yes
-	echo [2] No
-	echo     [0] Cancel
-	echo.
-	set /p res="Type here: "
-	
-	if "%res%" == "1" (
-		schtasks /delete /f /tn "PCRESTART%restx%" >nul
-		schtasks /create /sc %frec% /tn "PCRESTART%restx%" /tr "shutdown /r" /st %tm% /sd %dt%
-		if %ERRORLEVEL% NEQ 0 (
-			color 0c
-			echo Pay attention and now type a valid option
-			echo.
-			echo        [PRESS ENTER TO TYPE AGAIN]
-			pause>nul
-			color %themec%
-			cls&goto schedule1
-		)
-		echo DATE:%dt% TIME:%tm% FREQUENCY:%frec% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCRESTART%restx%"
-		echo.
-		echo SUCCESS: The computer has been programmed to restart on %dt% at %tm% %frec% successfully
-		echo.
-		echo         [PRESS ENTER TO GO TO MENU]
-		echo.
-		pause>nul
-		cls&goto main
-	)
-	if "%res%" == "2" (
-		echo.
-		echo An other schedule will be created
-		echo.
-		echo        [PRESS ENTER TO CONTINUE]
-		pause>nul
-		set /a temp=%restx% + 1
-		if %temp% GTR 4 (
-			echo.
-			echo ERROR, the limit of schedules for restart is only 5
-			echo.
-			echo [POSSIBLE SOLUTIONS]:
-			echo -You can overwrite an existing schedule
-			echo -Or you can delete an existing schedule by going to the Main menu } Delete schedule
-			echo.
-			echo         [PRESS ENTER TO GO TO MENU]
-			echo.
-			pause>nul
-			cls&goto main
-		)
-		set restx=%temp%
-		echo %restx% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat"
-	)
-	if "%res%" == "0" cls&goto main
-)
-echo Applying settings...
-schtasks /create /sc %frec% /tn "PCRESTART%restx%" /tr "shutdown /r" /st %tm% /sd %dt% >nul
-if %ERRORLEVEL% NEQ 0 (
+if not exist %accpathxcbd%\PCRESTART%restx% goto apply_schedule2
+
+:verify_schedule2
+echo There is already an appointment, do you want to overwrite it?
+echo.
+echo 1) Yes
+echo 2) No
+echo     0) Cancel
+echo.
+set /p res="Type here: "
+
+if "%res%" == "1" (
+	goto apply_schedule2
+) else if "%res%" == "2" (
+	goto new_schedule2
+) else if "%res%" == "0" (
+	cls&goto main
+) else (
 	color 0c
-	echo Pay attention and now type a valid option
+	echo.
+	echo Error, the command "%res%" is invalid!
 	echo.
 	echo        [PRESS ENTER TO TYPE AGAIN]
 	pause>nul
 	color %themec%
 	cls&goto schedule2
 )
-echo DATE:%dt% TIME:%tm% FREQUENCY:%frec% >"data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCRESTART%restx%"
-echo 
+
+
+:new_schedule2
+echo.
+echo An other schedule will be created
+echo.
+echo        [PRESS ENTER TO CONTINUE]
+echo.
+pause>nul
+set /a t=1+%restx% >nul
+if "%t%" GTR "4" (
+	echo.
+	echo ERROR, the limit of schedules for restart is only 5
+	echo.
+	echo [POSSIBLE SOLUTIONS]:
+	echo -You can overwrite an existing schedule
+	echo -Or you can delete an existing schedule by going to the Main menu } Delete schedule
+	echo.
+	echo         [PRESS ENTER TO GO TO MENU]
+	echo.
+	pause>nul
+	cls&goto main
+)
+set /a restx="%t%" + "0" >nul
+echo "%t%">%accpathxcbd%\rix.dat"
+
+:apply_schedule2
+echo Applying settings...
+schtasks /create /sc %frec% /tn PCRESTART%restx% /tr "shutdown /r" /st %tm% /sd %dt%
+if "%ERRORLEVEL%" NEQ "0" (
+	color 0c
+	echo.
+	echo        [PRESS ENTER TO TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto schedule2
+)
+set /a fow=%restx% + 0
+set /a new=%restx% + 5
+echo : %new% NAME:PCRESTART%fow% DATE:%dt% TIME:%tm% FREQUENCY:%frec%>%accpathxcbd%\PCRESTART%restx%
 echo.
 echo SUCCESS: The computer has been programmed to restart on %dt% at %tm% %frec% successfully
 echo.
@@ -391,7 +375,7 @@ echo.
 echo.
 echo Choose what schedule you want to delete:
 
-if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat" (
+if not exist %accpathxcbd%\six.dat (
 	color c4
 	echo.
 	echo FATAL ERROR
@@ -402,13 +386,13 @@ if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\six.dat" (
 	echo.
 	echo [POSSIBLE SOLUTION]:
 	echo GO TO OPTIONS } CLEAN ALL THE SCHEDULES } CONFIRM
-	echo         [PRESS ENTER GO TO MENU]
+	echo         [PRESS ENTER TO GO TO MENU]
 	echo.
 	pause>nul
 	color %themec%
 	cls&goto main
 )
-if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat" (
+if not exist %accpathxcbd%\rix.dat (
 	color c4
 	echo.
 	echo FATAL ERROR
@@ -419,29 +403,374 @@ if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\rix.dat" (
 	echo.
 	echo [POSSIBLE SOLUTION]:
 	echo GO TO OPTIONS } CLEAN ALL THE SCHEDULES } CONFIRM
-	echo         [PRESS ENTER GO TO MENU]
+	echo         [PRESS ENTER TO GO TO MENU]
 	echo.
 	pause>nul
 	color %themec%
 	cls&goto main
 )
-set ver=2
-if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN*" set /a ver=%ver%-1 >nul
-if not exist "data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN*" set /a ver=%ver%-1 >nul
-
-if %ver% == 0 goto empty
-
-echo All shutdown tasks
-type data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCSHUTDOWN*
-
-echo All restart tasks
-type data\.schedules{31EC4020-3AEA-9069-A2DD-08002B303ID89D}\PCRESTART*
-
-
-echo IN CONSTRUCTION...
+set slots=0
+echo  ____  ____  __    ____  ____  ____ 
+echo (  _ \( ___)(  )  ( ___)(_  _)( ___)                          .-----.
+echo  )(_) ))__)  )(__  )__)   )(   )__)                          / _   _ \
+echo (____/(____)(____)(____) (__) (____)                         ](_' `_)[
+echo           ___   ___  _   _  ____  ____  __  __  __    ____   `-. M ,-' 
+echo          / __) / __)( )_( )( ___)(  _ \(  )(  )(  )  ( ___)    ]"""[
+echo          \__ \( (__  ) _ (  )__)  )(_) ))(__)(  )(__  )__)     `---'
+echo          (___/ \___)(_) (_)(____)(____/(______)(____)(____)
 echo.
-echo         [PRESS ENTER GO TO MENU]
+echo ==================================================================
+echo    PC SHUTDOWN SCHEDULES:
 echo.
+if exist "%accpathxcbd%\PCSHUTDOWN0" (
+	type "%accpathxcbd%\PCSHUTDOWN0"
+	set slot0=True
+) else (
+	echo : -------------------------------------------------
+	set slot0=False
+	set /a slots="%slots%+1"
+)
+
+if exist "%accpathxcbd%\PCSHUTDOWN1" (
+	type "%accpathxcbd%\PCSHUTDOWN1"
+	set slot1=True
+) else (
+	echo : -------------------------------------------------
+	set slot1=False
+	set /a slots="%slots%+1"
+)
+if exist "%accpathxcbd%\PCSHUTDOWN2" (
+	type "%accpathxcbd%\PCSHUTDOWN2"
+	set slot2=True
+) else (
+	echo : -------------------------------------------------
+	set slot2=False
+	set /a slots="%slots%+1"
+)
+if exist "%accpathxcbd%\PCSHUTDOWN3" (
+	type "%accpathxcbd%\PCSHUTDOWN3"
+	set slot3=True
+) else (
+	echo : -------------------------------------------------
+	set slot3=False
+	set /a slots="%slots%+1"
+)
+if exist "%accpathxcbd%\PCSHUTDOWN4" (
+	type "%accpathxcbd%\PCSHUTDOWN4"
+	set slot4=True
+) else (
+	echo : -------------------------------------------------
+	set slot4=False
+	set /a slots="%slots%+1"
+)
+
+echo.
+echo    PC RESTART SCHEDULES:
+echo.
+
+if exist "%accpathxcbd%\PCRESTART0" (
+	type "%accpathxcbd%\PCRESTART0"
+	set slot5=True
+) else (
+	echo : -------------------------------------------------
+	set slot5=False
+	set /a slots="%slots%+1"
+)
+
+if exist "%accpathxcbd%\PCRESTART1" (
+	type "%accpathxcbd%\PCRESTART1"
+	set slot6=True
+) else (
+	echo : -------------------------------------------------
+	set slot6=False
+	set /a slots="%slots%+1"
+)
+if exist "%accpathxcbd%\PCRESTART2" (
+	type "%accpathxcbd%\PCRESTART2"
+	set slot7=True
+) else (
+	echo : -------------------------------------------------
+	set slot7=False
+	set /a slots="%slots%+1"
+)
+if exist "%accpathxcbd%\PCRESTART3" (
+	type "%accpathxcbd%\PCRESTART3"
+	set slot8=True
+) else (
+	echo : -------------------------------------------------
+	set slot8=False
+	set /a slots="%slots%+1"
+)
+if exist "%accpathxcbd%\PCRESTART4" (
+	type "%accpathxcbd%\PCRESTART4"
+	set slot9=True
+) else (
+	echo : -------------------------------------------------
+	set slot9=False
+	set /a slots="%slots%+1"
+)
+
+if "%slots%" == "10" goto empty
+
+echo.
+echo Type 'cancel' or 'x' to cancel operation...
+echo.
+set /p opt="Enter the number of the schedule that you want to delete: "
+
+if "%opt%" == "0" (
+	if "%slot0%" == "True" (
+		goto apply_deletion
+	) else (
+		color 0c
+		echo Invalid option! Type the NUMBER of the SCHEDULE that
+		echo You want to DELETE
+		echo.
+		echo        [PRESS ENTER TO TYPE AGAIN]
+		pause>nul
+		color %themec%
+		cls&goto deletesch
+	)
+) else if "%opt%" == "1" (
+	if "%slot1%" == "True" (
+		goto apply_deletion
+	) else (
+		color 0c
+		echo Invalid option! Type the NUMBER of the SCHEDULE that
+		echo You want to DELETE
+		echo.
+		echo        [PRESS ENTER TO TYPE AGAIN]
+		pause>nul
+		color %themec%
+		cls&goto deletesch
+	)
+) else if "%opt%" == "2" (
+	if "%slot2%" == "True" (
+		goto apply_deletion
+	) else (
+		color 0c
+		echo Invalid option! Type the NUMBER of the SCHEDULE that
+		echo You want to DELETE
+		echo.
+		echo        [PRESS ENTER TO TYPE AGAIN]
+		pause>nul
+		color %themec%
+		cls&goto deletesch
+	)
+) else if "%opt%" == "3" (
+	if "%slot3%" == "True" (
+		goto apply_deletion
+	) else (
+		color 0c
+		echo Invalid option! Type the NUMBER of the SCHEDULE that
+		echo You want to DELETE
+		echo.
+		echo        [PRESS ENTER TO TYPE AGAIN]
+		pause>nul
+		color %themec%
+		cls&goto deletesch
+	)
+) else if "%opt%" == "4" (
+	if "%slot4%" == "True" (
+		goto apply_deletion
+	) else (
+		color 0c
+		echo Invalid option! Type the NUMBER of the SCHEDULE that
+		echo You want to DELETE
+		echo.
+		echo        [PRESS ENTER TO TYPE AGAIN]
+		pause>nul
+		color %themec%
+		cls&goto deletesch
+	)
+) else if "%opt%" == "5" (
+	if "%slot5%" == "True" (
+		goto apply_deletion
+	) else (
+		color 0c
+		echo Invalid option! Type the NUMBER of the SCHEDULE that
+		echo You want to DELETE
+		echo.
+		echo        [PRESS ENTER TO TYPE AGAIN]
+		pause>nul
+		color %themec%
+		cls&goto deletesch
+	)
+) else if "%opt%" == "6" (
+	if "%slot6%" == "True" (
+		goto apply_deletion
+	) else (
+		color 0c
+		echo Invalid option! Type the NUMBER of the SCHEDULE that
+		echo You want to DELETE
+		echo.
+		echo        [PRESS ENTER TO TYPE AGAIN]
+		pause>nul
+		color %themec%
+		cls&goto deletesch
+	)
+) else if "%opt%" == "7" (
+	if "%slot7%" == "True" (
+		goto apply_deletion
+	) else (
+		color 0c
+		echo Invalid option! Type the NUMBER of the SCHEDULE that
+		echo You want to DELETE
+		echo.
+		echo        [PRESS ENTER TO TYPE AGAIN]
+		pause>nul
+		color %themec%
+		cls&goto deletesch
+	)
+) else if "%opt%" == "8" (
+	if "%slot8%" == "True" (
+		goto apply_deletion
+	) else (
+		color 0c
+		echo Invalid option! Type the NUMBER of the SCHEDULE that
+		echo You want to DELETE
+		echo.
+		echo        [PRESS ENTER TO TYPE AGAIN]
+		pause>nul
+		color %themec%
+		cls&goto deletesch
+	)
+) else if "%opt%" == "9" (
+	if "%slot9%" == "True" (
+		goto apply_deletion
+	) else (
+		color 0c
+		echo Invalid option! Type the NUMBER of the SCHEDULE that
+		echo You want to DELETE
+		echo.
+		echo        [PRESS ENTER TO TYPE AGAIN]
+		pause>nul
+		color %themec%
+		cls&goto deletesch
+	)
+) else if "%opt%" == "cancel" (
+	echo Operation canceled!
+	echo.
+	echo        [PRESS ENTER TO GO TO MENU]
+	pause>nul
+	cls&goto main
+) else if "%opt%" == "x" (
+	echo Operation canceled!
+	echo.
+	echo        [PRESS ENTER TO GO TO MENU]
+	pause>nul
+	cls&goto main
+
+)else if "%opt%" == "CANCEL" (
+	echo Operation canceled!
+	echo.
+	echo        [PRESS ENTER TO GO TO MENU]
+	pause>nul
+	cls&goto main
+) else if "%opt%" == "X" (
+	echo.
+	echo Operation canceled!
+	echo.
+	echo        [PRESS ENTER TO GO TO MENU]
+	pause>nul
+	cls&goto main
+) else (
+	color 0c
+	echo Invalid option! Type the NUMBER of the SCHEDULE that
+	echo You want to DELETE
+	echo.
+	echo        [PRESS ENTER TO TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto deletesch
+)
+
+:apply_deletion
+if "%opt%" LSS "5" (
+	set stak=PCSHUTDOWN
+) else (
+	set stak=PCRESTART
+	set /a opt="%opt%-5"
+)
+
+set /p confirm="Are you sure you want to delete %stak%%opt% schedule? (Y\N): "
+if "%confirm%" == "Y" (
+	echo Deleting the schedule...
+) else if "%confirm%" == "y" (
+	echo Deleting the schedule...
+) else if "%confirm%" == "N" (
+	echo.
+	echo Operation canceled!
+	echo.
+	echo        [PRESS ENTER TO GO TO MENU]
+	pause>nul
+	cls&goto main
+) else if "%confirm%" == "n" (
+	echo.
+	echo Operation canceled!
+	echo.
+	echo        [PRESS ENTER TO GO TO MENU]
+	pause>nul
+	cls&goto main
+) else (
+	color 0c
+	echo.
+	echo Invalid option, just enter "Y" [YES] or "N" [NO]
+	echo To confirm or not the exclusion
+	echo.
+	echo        [PRESS ENTER TO TYPE AGAIN]
+	pause>nul
+	color %themec%
+	cls&goto apply_deletion
+)
+
+schtasks /delete /f /tn "%stak%%opt%"
+if "%ERRORLEVEL%" GTR "0" (
+	color 0c
+	echo An error ocurred, try again later
+	echo.
+	echo        [PRESS ENTER TO GO TO MENU]
+	pause>nul
+	color %themec%
+	cls&goto main
+)
+del "%accpathxcbd%\%stak%%opt%"
+if "%ERRORLEVEL%" GTR "0" (
+	color 0c
+	echo An error ocurred, try again later
+	echo.
+	echo        [PRESS ENTER TO GO TO MENU]
+	pause>nul
+	color %themec%
+	cls&goto main
+)
+
+if "%stak%" == "PCSHUTDOWN" goto ver1
+if "%stak%" == "PCRESTART" goto ver2
+
+:ver1
+if %shutx% == "0" goto deletefinish
+goto reduceshutx
+
+:ver2
+if %restx% == "0" goto deletefinish
+goto reducerestx
+
+:reduceshutx
+set /a t="%shutx%-1"
+set shutx="%t%"
+echo %shutx%>"%accpathxcbd%\six.dat"
+goto deletefinish
+
+:reducerestx
+set /a t="%restx%-1"
+set restx="%t%"
+echo %restx%>"%accpathxcbd%\rix.dat"
+goto deletefinish
+
+:deletefinish
+echo SUCCESS: The schedule %stak%%opt% has been deleted successfully!
+echo.
+echo        [PRESS ENTER TO GO TO MENU]
 pause>nul
 cls&goto main
 
@@ -449,7 +778,7 @@ cls&goto main
 echo.
 echo No schedules to show
 echo.
-echo         [PRESS ENTER GO TO MENU]
+echo         [PRESS ENTER TO GO TO MENU]
 echo.
 pause>nul
 cls&goto main
@@ -472,7 +801,7 @@ if "%var%" == "0" cls&goto main
 color 0c
 echo Error, the command "%var%" wasn't recognized
 echo.
-echo        [PRESS ENTER TYPE AGAIN]
+echo        [PRESS ENTER TO TYPE AGAIN]
 pause>nul
 color %themec%
 cls&goto options
@@ -555,20 +884,65 @@ if "%var%" == "9" (
 	
 )
 
-if "%var%" == "0" cls&goto options
+if "%var%" == "0" (
+	echo %themec%>data\theme.dat
+	cls&goto options
+)
 
 color 0c
 echo Error, the command "%var%" wasn't recognized
 echo.
-echo        [PRESS ENTER TYPE AGAIN]
+echo        [PRESS ENTER TO TYPE AGAIN]
 pause>nul
 color %themec%
 cls&goto colortheme
 
 :clean
-echo TODO
+echo Cleaning...
+schtasks /delete /f /tn "PCSHUTDOWN0"
+schtasks /delete /f /tn "PCSHUTDOWN1"
+schtasks /delete /f /tn "PCSHUTDOWN2"
+schtasks /delete /f /tn "PCSHUTDOWN3"
+schtasks /delete /f /tn "PCSHUTDOWN4"
+schtasks /delete /f /tn "PCRESTART0"
+schtasks /delete /f /tn "PCRESTART1"
+schtasks /delete /f /tn "PCRESTART2"
+schtasks /delete /f /tn "PCRESTART3"
+schtasks /delete /f /tn "PCRESTART4"
+rd /s /q %accpathxcbd%
+cls
+echo DONE, ALL SCHEDULES WERE REMOVED
+echo.
+echo.
+echo        [PRESS ENTER TO GO TO MENU]
 pause>nul
-exit
+cls&goto main
+
+:help
+echo  Hi,
+echo  This is a guide to help you schedule your tasks smoothly.
+echo.
+echo  You may have noticed that there are many options in the menu, including the help option 
+echo  (this one), so if you want to schedule a shutdown, you type in the option number and 
+echo  follow the steps that the 
+echo  menu will give you.
+echo.
+echo  If you didn't like these colors displayed at the prompt, you can change them through the 
+echo  options and then the color theme option.
+echo.
+echo  If you want to delete all of the schedules at once, or you are unable to delete the 
+echo  schedules, and if they are causing you troubles, you can go to the clean option, 
+echo  which is found in the options menu, along with the color theme options.
+echo.
+echo.
+echo      OBSERVATIONS:
+echo.
+echo This page is a draft, this text is subject to change. 
+echo It is possible that there will be improvements in a short time.
+echo.
+echo        [PRESS ENTER TO GO TO MENU]
+pause>nul
+cls&goto main
 
 :finish
 echo %themec%>data\theme.dat
