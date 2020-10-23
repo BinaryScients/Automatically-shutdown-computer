@@ -1,6 +1,6 @@
-# Automatically Shutdown Computer - Sleeping Aid program verion 0.1.35 Alpha
+# Automatically Shutdown Computer - Sleeping Aid program version 0.1.35 Alpha
 
-This is a simple program that helps Windows users to schedule their computers to shutdown
+This is a simple program that helps Windows users to schedule their computers to shutdown.
 
 With just a few commands you can program your computer to shut down at the time you want it every day (or only on the days you determine). This script uses Windows' own resources to schedule shutdown.
 
@@ -16,7 +16,7 @@ With just a few commands you can program your computer to shut down at the time 
 
 
 
-1. Open the "Sleeping aid" program. The .bat or .exe file
+1. Open the "Sleeping aid" program. The .bat or the .exe file
 <p align="left">
   <img src="https://raw.githubusercontent.com/BinaryScients/Automatically-shutdown-computer/master/resources/files.PNG" width="350" title="Sleeping aid program">
 </p>
@@ -30,7 +30,7 @@ With just a few commands you can program your computer to shut down at the time 
 </p>
 4. Choose the date that you want the rule to start taking effect.
 <p align="left">
-  <img src="https://raw.githubusercontent.com/BinaryScients/Automatically-shutdown-computer/master/resources/schedule-2.PNG" width="900" title="Schedule>
+  <img src="https://raw.githubusercontent.com/BinaryScients/Automatically-shutdown-computer/master/resources/schedule-2.PNG" width="900" title="Schedule">
 </p>
 5. Choose the frequency at which the computer will shut down. For example, weekly.
 <p align="left">
@@ -45,7 +45,7 @@ Very simple, isn't it? :)
 
 ## Deleting Schedules
 
-If you do not want more than a certain scheduled task to be executed, you can delete it by going to the "Delete schedule" menu and choosing the task you wish to delete.
+If you don't want a particular schedule task to be performed, you can delete it by going to the "Delete schedule" menu and choosing the task you wish to delete.
 <p align="left">
   <img src="https://raw.githubusercontent.com/BinaryScients/Automatically-shutdown-computer/master/resources/delete-schedule-1.PNG" width="720" title="Delete schedule">
   <img src="https://raw.githubusercontent.com/BinaryScients/Automatically-shutdown-computer/master/resources/schedule-5.PNG" width="720" title="Delete schedule">
@@ -55,7 +55,7 @@ If you do not want more than a certain scheduled task to be executed, you can de
 
 ## Color themes
 
-You can also choose a color theme that you prefer
+You can also choose a color theme that you prefer.
 
 <p align="right">
   <img src="https://raw.githubusercontent.com/BinaryScients/Automatically-shutdown-computer/master/resources/color-theme.PNG" width="900" title="Color theme menu">
@@ -77,3 +77,5 @@ Repeat the same procedure with the restart tasks, if you have programmed, by typ
 schtasks / delete / f / tn "PCRESTART0"
 ```
 You can also choose to go to the "clean schedules" option located in the "Go to options" menu, in the Sleeping aid program. It deletes all tasks created automatically.
+
+Some references to make this algorithm, were found <b><a href="https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/schtasks">here<a/></b>.
