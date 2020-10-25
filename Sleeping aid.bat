@@ -1,7 +1,7 @@
 :: Author: Willian Azevedo 
 :: Created on: 11th, October, 2020 at 01:15 P.M. (GMT-3) 
 :: Last Modification on: 25th, October, 2020 at 04:20 P.M. (GMT-3) 
-:: Sleeping Aid - Automatic shutdown program version 0.5.0 Beta
+:: Sleeping Aid - Automatic shutdown program version 0.2.0 Beta
 :: 
 :: This is a simple batch program for automatically shutdown pc
 ::
@@ -40,12 +40,12 @@ set restx="0"
 :start
 color %themec%
 mode 100, 30
-title Sleeping aid - Automatic shutdown program (v0.5 beta)
+title Sleeping aid - Automatic shutdown program (v0.2 beta)
 cls
 
 :main
 echo Sleeping Aid - Automatic Shutdown Program for Windows
-echo version 0.5.0 Beta
+echo version 0.2.0 Beta
 echo.
 echo        _    _  ____  __    ___  _____  __  __  ____ 
 echo       ( \/\/ )( ___)(  )  / __)(  _  )(  \/  )( ___)
@@ -1369,7 +1369,7 @@ pause>nul
 cls&goto main
 
 :about
-echo  Sleeping Aid - Automatic Shutdown Computer Program v0.5.0 ~ Beta
+echo  Sleeping Aid - Automatic Shutdown Computer Program v0.2.0 ~ Beta
 echo  Copyright (C) 2020 Willian Azevedo
 echo.
 echo  Contributor(s): Willian Azevedo
