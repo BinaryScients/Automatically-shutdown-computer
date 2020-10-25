@@ -1,4 +1,4 @@
-# Automatically Shutdown Computer - Sleeping Aid program version 0.1.35 Alpha
+# Automatically Shutdown Computer - Sleeping Aid program version 0.2.0 Beta
 
 This is a simple program that helps Windows users to schedule their computers to shutdown.
 
